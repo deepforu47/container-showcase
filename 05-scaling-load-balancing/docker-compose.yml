@@ -1,0 +1,38 @@
+services:
+  nginx-lb:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+  web:
+    build: ./app
+    # Note: We do NOT bind ports here. The host cannot access the web node directly.
+    # It must go through the Nginx Load Balancer on port 80.
+    environment:
+      - DB_HOST=db
+      - DB_NAME=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ./db
+    volumes:
+      - pgdata_storage:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 2s
+
+volumes:
+  pgdata_storage:
