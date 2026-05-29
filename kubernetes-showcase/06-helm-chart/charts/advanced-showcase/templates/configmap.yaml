@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  APP_COLOR: {{ .Values.config.appColor | quote }}
+  APP_ENV: {{ .Values.config.appEnv | quote }}

@@ -1,0 +1,41 @@
+# Default values for advanced-showcase.
+# This is a YAML-formatted file.
+
+# Global Configurations
+replicaCount: 3
+
+image:
+  flask:
+    repository: flask-db
+    tag: latest
+    pullPolicy: IfNotPresent
+  postgres:
+    repository: postgres
+    tag: 15-alpine
+    pullPolicy: IfNotPresent
+
+# App ConfigMap Values
+config:
+  appColor: "#f0fdf4"  # Default light green background
+  appEnv: "Production-Release"
+
+# Database Configurations
+database:
+  dbName: "analytics_db"
+  dbUser: "admin"
+  dbPassword: "supersecurepassword"  # Plain-text in values, will be base64 encoded by Helm template!
+  storageSize: 1Gi
+  storageClassName: local-path
+
+# Service Configuration
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30086
+  loadBalancerPort: 8082
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  host: flask-app.local
+  className: traefik

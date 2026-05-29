@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_COLOR: "#e0f2fe"  # Sleek blue background
+  APP_ENV: "Staging-Cluster"
